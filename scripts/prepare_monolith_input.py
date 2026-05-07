@@ -46,10 +46,15 @@ METRICS_DIR = PROJECT_ROOT / ".claude" / "skills" / "humanize-korean" / "referen
 
 # Make metrics.py importable without polluting global state.
 sys.path.insert(0, str(METRICS_DIR))
+# v2.0 우선 import — compute_all 별칭으로 v1.6 호환. metrics_v2 부재·로드 실패 시
+# v1.6 metrics fallback. graceful degrade로 monolith 동작은 항상 보장.
 try:
-    import metrics as _metrics_mod  # type: ignore
-except Exception:  # pragma: no cover — module import itself failing.
-    _metrics_mod = None
+    import metrics_v2 as _metrics_mod  # type: ignore  # v2.0 (post-editese 14 metric)
+except Exception:  # pragma: no cover
+    try:
+        import metrics as _metrics_mod  # type: ignore  # v1.6 fallback
+    except Exception:
+        _metrics_mod = None
 
 
 # ---------------------------------------------------------------------------
