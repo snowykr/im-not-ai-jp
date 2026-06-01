@@ -127,6 +127,8 @@ final.md + summary.md
 
 ## 사용법 — 5분이면 따라합니다
 
+> **전역 설치([설치](#설치-install))를 마쳤다면** 1~2단계(클론·폴더 진입)는 건너뛰고, 아무 폴더에서나 바로 **3단계**로 가세요. 아래는 설치 없이 리포에서 곧바로 체험하는 흐름입니다.
+
 ### 0. 전제
 
 [Claude Code](https://claude.com/claude-code)가 설치돼 있어야 합니다. Mac · Windows · Linux 모두 지원합니다.
@@ -145,13 +147,14 @@ git clone https://github.com/epoko77-ai/im-not-ai.git
 cd im-not-ai
 ```
 
-### 2. 이 폴더 안에서 Claude Code 켜기
+### 2. Claude Code 켜기
 
 ```bash
 claude
 ```
 
-> **중요:** 꼭 `im-not-ai` 폴더 **안에서** 실행하세요. 다른 위치에서 켜면 이 리포의 스킬이 로드되지 않아 일반 Claude Code처럼 동작합니다.
+> **전역 설치를 했다면** 아무 폴더에서나 켜도 `/humanize-korean`이 동작합니다([설치](#설치-install) 참고).
+> **설치 없이 체험만 하려면** 방금 클론한 `im-not-ai` 폴더 **안에서** 실행하세요(프로젝트 로컬 스킬이 로드됩니다). 다른 위치에서 켜면 일반 Claude Code처럼 동작합니다.
 
 ### 3. AI가 쓴 한글 글 붙여넣고 부탁하기
 
@@ -180,21 +183,29 @@ Claude Code에서는 세 가지 방법 중 편한 쪽으로 사용합니다. Cod
 /humanize [윤문할 텍스트 또는 파일 경로]
 ```
 
-옵션을 인자 끝에 자연어로 적을 수 있습니다: `장르: 칼럼`, `강도: 적극`, `최소심각도: S1`. 결과가 마음에 안 들면 `/humanize-redo "번역투만 다시"` 같은 식으로 재실행. 두 커맨드 정의: [`commands/`](.claude/commands/)
+옵션을 인자 끝에 자연어로 적을 수 있습니다: `장르: 칼럼`, `강도: 적극`, `최소심각도: S1`. 결과가 마음에 안 들면 `/humanize-redo "번역투만 다시"` 같은 식으로 재실행. 두 진입점은 이제 스킬입니다: [`humanize`](.claude/skills/humanize/SKILL.md) · [`humanize-redo`](.claude/skills/humanize-redo/SKILL.md)
 
-**방법 C — Plugin / 자동 설치기** *(@gaebalai 포크)*
+**방법 C — Plugin / 마켓플레이스 (공식)**
 
-[`gaebalai/im-not-ai`](https://github.com/gaebalai/im-not-ai) 포크가 Claude Code Plugin/Marketplace 규격으로 패키징되어 있습니다. `/plugin install humanize-korean@epoko77-ai-plugins` 또는 `./scripts/install.sh --target ~/my-project` 한 줄로 설치 가능합니다. 본체 정식 Plugin 지원은 v1.6 검토 중입니다 ([Issue 추적 예정](https://github.com/epoko77-ai/im-not-ai/issues)).
+본체가 이제 Claude Code Plugin/Marketplace를 **공식 지원**합니다. 클론 없이 마켓플레이스로 설치하세요:
 
-**방법 D — Codex Plugin (community)**
+```
+/plugin marketplace add epoko77-ai/im-not-ai
+/plugin install humanize-korean@im-not-ai
+```
 
-[`Squirbie/im-not-ai-codex`](https://github.com/Squirbie/im-not-ai-codex)에서 Codex Desktop/CLI용 community plugin 포트를 제공합니다. 원본 taxonomy/playbook을 유지하고 Codex plugin/skill 구조에 맞게 어댑터화한 별도 배포판이며, 공식 Claude Code 버전과 분리되어 관리됩니다.
+스킬 3개 + 서브에이전트 12개가 함께 설치됩니다. 자세한 옵션·스크립트 설치는 [설치](#설치-install) 섹션과 [`INSTALL.md`](INSTALL.md) 참고. (초기 패키징을 탐색한 [`gaebalai/im-not-ai`](https://github.com/gaebalai/im-not-ai) 포크도 있습니다.)
 
-설치:
+**방법 D — Codex CLI (공식, Fast 모드)**
+
+본체가 이제 Codex CLI Skills를 **공식 지원**합니다. 리포 클론 후 한 줄이면 `~/.codex/skills/`에 연결됩니다:
 
 ```bash
-codex plugin marketplace add Squirbie/im-not-ai-codex
+git clone https://github.com/epoko77-ai/im-not-ai.git && cd im-not-ai
+./install.sh --codex-only
 ```
+
+Codex에서 `$humanize-korean`으로 발동합니다(또는 `/skills` 메뉴). Codex는 단일 호출 **Fast 모드**만 제공하며, 정밀 strict 5인 파이프라인은 Claude Code 전용입니다. (Codex Desktop용 별도 어댑터로는 community 포트 [`Squirbie/im-not-ai-codex`](https://github.com/Squirbie/im-not-ai-codex)도 있습니다.)
 
 **방법 E — Web UI (비공식)**
 
