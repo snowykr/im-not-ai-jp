@@ -14,32 +14,27 @@ AI(ChatGPT·Claude·Gemini 등)가 쓴 한글 텍스트를 "사람이 쓴 글처
 ## 디렉토리 구조
 
 ```
-humanize-ko/
+im-not-ai/
 ├── CLAUDE.md                      # 본 파일 — 프로젝트 가이드
-├── .claude/
-│   ├── agents/                    # 6인 에이전트 정의
-│   │   ├── korean-ai-tell-taxonomist.md
-│   │   ├── ai-tell-detector.md
-│   │   ├── korean-style-rewriter.md
-│   │   ├── content-fidelity-auditor.md
-│   │   ├── naturalness-reviewer.md
-│   │   └── humanize-web-architect.md
-│   └── skills/humanize-korean/
-│       ├── SKILL.md               # 오케스트레이터
-│       └── references/
-│           ├── ai-tell-taxonomy.md     # SSOT — 10대분류 × 40+ 패턴
-│           ├── rewriting-playbook.md   # 카테고리별 치환 레시피
-│           └── web-service-spec.md     # Phase 5 웹 확장용
-└── _workspace/                    # 런타임 산출물 (run_id별)
-    └── {YYYY-MM-DD-NNN}/
-        ├── 01_input.txt
-        ├── 02_detection.json
-        ├── 03_rewrite.md
-        ├── 03_rewrite_diff.json
-        ├── 04_fidelity_audit.json
-        ├── 05_naturalness_review.json
-        ├── final.md
-        └── summary.md
+├── README.md / INSTALL.md         # 사용·설치 안내
+├── .claude-plugin/                # Claude 플러그인 + 마켓플레이스 매니페스트
+│   ├── plugin.json                # skills: ./.claude/skills/ · 에이전트는 루트 agents/ 자동탐색
+│   └── marketplace.json           # /plugin marketplace add epoko77-ai/im-not-ai
+├── install.sh / uninstall.sh      # Claude·Codex 전역 설치/제거 (심링크 기본)
+├── agents/                        # 서브에이전트 12종 (플러그인 컨벤션 — 루트 agents/에 둬야 로드됨)
+│   ├── humanize-monolith.md       # Fast 단일 호출
+│   ├── ai-tell-detector.md · korean-style-rewriter.md
+│   ├── content-fidelity-auditor.md · naturalness-reviewer.md
+│   └── … taxonomist·scholar·distiller 등 지원 7종
+├── .claude/skills/                # 스킬 3종 (humanize-korean·humanize·humanize-redo)
+│   └── humanize-korean/
+│       ├── SKILL.md               # 오케스트레이터 (quick_rules_path: ${CLAUDE_SKILL_DIR}/...)
+│       └── references/            # SSOT — ai-tell-taxonomy·rewriting-playbook·quick-rules 등
+├── codex/skills/humanize-korean/  # Codex Fast Path 스킬
+│   ├── SKILL.md                   # monolith 기반 자가완결
+│   └── references → ../../../.claude/skills/humanize-korean/references   # SSOT 공유 심링크
+└── _workspace/                    # 런타임 산출물 (run_id별, gitignored)
+    └── {YYYY-MM-DD-NNN}/          # 01_input.txt … final.md · summary.md
 ```
 
 ## 파이프라인
