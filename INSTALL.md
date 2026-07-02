@@ -2,6 +2,8 @@
 
 `im-not-ai-jp` installs a Japanese Fast Path skill into supported local AI coding CLIs.
 
+This repository is private during incubation. Install commands below assume you have access to `snowykr/im-not-ai-jp`; do not treat them as public release instructions until the repository is intentionally made public.
+
 ```bash
 git clone https://github.com/snowykr/im-not-ai-jp.git
 cd im-not-ai-jp

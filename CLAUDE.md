@@ -31,6 +31,7 @@ im-not-ai-jp/
 - Do not reuse the Korean taxonomy as the Japanese taxonomy.
 - Keep upstream Korean material in `legacy/upstream-korean/` for attribution and reference only.
 - Install only `humanize-japanese`, `humanize`, and `humanize-redo` from `.claude/skills/`.
+- Keep the GitHub repository private during incubation; do not prepare public release or marketplace language until the user explicitly changes that policy.
 
 ## Upstream Policy
 

@@ -24,6 +24,12 @@ This repository began as an independent mirror-based adaptation of [`epoko77-ai/
 
 The first public milestone is a Fast Path skill for Claude Code, Codex CLI, and Gemini CLI. The stricter multi-agent Japanese taxonomy is intentionally separate future work.
 
+## Visibility Policy
+
+This repository stays **private during incubation**. It should only be made public after the Japanese taxonomy, examples, install flow, and project documentation are strong enough to represent an independent public project.
+
+Until then, treat `snowykr/im-not-ai-jp` as a private working repository, not a public fork, marketplace package, or announced release.
+
 ## Install
 
 Clone this independent repository:
