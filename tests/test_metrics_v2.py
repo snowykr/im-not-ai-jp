@@ -1,4 +1,4 @@
-"""Tests for humanize-ko v2.0 metrics module.
+"""Tests for legacy upstream Korean v2.0 metrics module.
 
 Runs under pytest OR `python -m unittest`. Imports both the v1.6 metrics
 (for regression checks) and the v2.0 metrics_v2 from this workspace.
@@ -12,28 +12,38 @@ Spec:
 from __future__ import annotations
 
 import json
+import importlib.util
 import os
-import sys
 import tempfile
+import types
 import unittest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-PROJECT_ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
+PROJECT_ROOT = os.path.abspath(os.path.join(HERE, ".."))
 
 # v1.6 module location
 V1_DIR = os.path.join(
-    PROJECT_ROOT, ".claude", "skills", "humanize-korean", "references"
+    PROJECT_ROOT, "legacy", "upstream-korean", "claude", "humanize-korean", "references"
 )
-sys.path.insert(0, V1_DIR)
-sys.path.insert(0, HERE)
 
-import metrics  # noqa: E402  (v1.6)
-import metrics_v2  # noqa: E402  (v2.0 superset)
+
+def load_legacy_module(module_name: str, filename: str) -> types.ModuleType:
+    module_path = os.path.join(V1_DIR, filename)
+    spec = importlib.util.spec_from_file_location(module_name, module_path)
+    if spec is None or spec.loader is None:
+        raise ImportError(module_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+metrics = load_legacy_module("legacy_metrics", "metrics.py")
+metrics_v2 = load_legacy_module("legacy_metrics_v2", "metrics_v2.py")
 
 BASELINE_PATH = os.path.join(
-    PROJECT_ROOT, "_workspace", "v1.6-2026-05-06", "02_katfish_baseline.json"
+    V1_DIR, "baseline.json"
 )
-BASELINE_V2_PATH = os.path.join(HERE, "baseline_v2_diff.json")
+BASELINE_V2_PATH = os.path.join(V1_DIR, "baseline_v2.json")
 
 
 # ===========================================================================

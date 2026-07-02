@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Humanize KR — 업데이트 감지 + 자동 적용
+# im-not-ai-jp — 업데이트 감지 + 자동 적용
 # upstream(git)을 확인해 새 커밋이 있으면 fast-forward pull 후 install.sh를 재적용한다.
 # 심링크 설치는 pull만으로도 내용이 반영되지만, 신규 스킬/에이전트/구조 변경까지 확실히
 # 연결하려고 install.sh를 다시 실행한다(멱등).
@@ -35,7 +35,7 @@ ver() { grep -o '"version"[[:space:]]*:[[:space:]]*"[^"]*"' "$REPO/.claude-plugi
 
 UPSTREAM="$(g rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null || echo origin/main)"
 UP_REMOTE="${UPSTREAM%%/*}"
-echo "업데이트 확인 중… (upstream: $UPSTREAM)"
+echo "업데이트 확인 중... (tracking: $UPSTREAM)"
 g fetch --quiet "$UP_REMOTE" || { echo "fetch 실패 — 네트워크/원격을 확인하세요."; exit 2; }
 
 LOCAL="$(g rev-parse HEAD)"
@@ -57,7 +57,7 @@ fi
 
 # 여기 도달 = behind, fast-forward 가능
 BEHIND="$(g rev-list --count "HEAD..$UPSTREAM")"
-echo "🔔 업데이트 있음: $BEHIND개 커밋 ($UPSTREAM)"
+echo "업데이트 있음: $BEHIND개 커밋 ($UPSTREAM)"
 g --no-pager log --oneline "HEAD..$UPSTREAM" 2>/dev/null | head -10 | sed 's/^/    /'
 
 if [ "$CHECK_ONLY" = 1 ]; then
@@ -70,4 +70,4 @@ echo "fast-forward pull…"
 g pull --ff-only
 echo "설치 재적용(install.sh, 멱등)…"
 "$REPO/install.sh" ${ARGS[@]+"${ARGS[@]}"}
-echo "✅ 자동 업데이트 완료: v$OLD → v$(ver)."
+echo "자동 업데이트 완료: v$OLD -> v$(ver)."

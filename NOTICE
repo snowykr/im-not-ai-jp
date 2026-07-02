@@ -1,0 +1,12 @@
+# Notice
+
+This project began as a Japanese-language adaptation of
+epoko77-ai/im-not-ai, licensed under the MIT License.
+
+The initial repository history, installation approach, plugin packaging,
+and skill architecture were derived from the original project. The Japanese
+detection taxonomy, rewriting rules, prompts, examples, and evaluation
+materials are maintained independently here.
+
+Legacy Korean upstream material is retained under legacy/upstream-korean/
+for attribution and reference. It is not installed by the default scripts.

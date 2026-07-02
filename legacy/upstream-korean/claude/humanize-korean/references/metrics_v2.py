@@ -27,11 +27,13 @@ CLI:
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import math
 import os
 import re
 import sys
+import types
 from collections import Counter
 from statistics import StatisticsError, mean, pstdev
 from typing import Any
@@ -41,14 +43,19 @@ from typing import Any
 # ---------------------------------------------------------------------------
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
-_PROJECT_ROOT = os.path.abspath(os.path.join(_HERE, "..", "..", ".."))
-_V1_METRICS_DIR = os.path.join(
-    _PROJECT_ROOT, ".claude", "skills", "humanize-korean", "references"
-)
-if _V1_METRICS_DIR not in sys.path:
-    sys.path.insert(0, _V1_METRICS_DIR)
 
-import metrics as _v1  # noqa: E402  (sys.path mutation is intentional)
+
+def _load_v1_metrics() -> types.ModuleType:
+    module_path = os.path.join(_HERE, "metrics.py")
+    spec = importlib.util.spec_from_file_location("legacy_metrics_v1", module_path)
+    if spec is None or spec.loader is None:
+        raise ImportError(module_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_v1 = _load_v1_metrics()
 
 # Re-export the 8 v1.6 metric callables verbatim. They keep their original
 # signatures and return shapes — `metrics_v2.comma_inclusion_rate(text)`

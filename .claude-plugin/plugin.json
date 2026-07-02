@@ -1,13 +1,13 @@
 {
-  "name": "humanize-korean",
+  "name": "humanize-japanese",
   "version": "1.5.0",
-  "description": "AI가 쓴 한글 텍스트를 사람이 쓴 글처럼 윤문 — Fast(monolith) + strict 5인 파이프라인. 10대 카테고리 40+ AI 티 패턴 탐지·재작성.",
+  "description": "AI-generated Japanese text rewriting skill for reducing templated, translation-like, and mechanically polite prose. Fast Path first; Japanese taxonomy maintained independently.",
   "author": {
-    "name": "epoko77-ai"
+    "name": "snowykr"
   },
-  "homepage": "https://github.com/epoko77-ai/im-not-ai",
-  "repository": "https://github.com/epoko77-ai/im-not-ai",
+  "homepage": "https://github.com/snowykr/im-not-ai-jp",
+  "repository": "https://github.com/snowykr/im-not-ai-jp",
   "license": "MIT",
-  "keywords": ["korean", "humanize", "ai-detector", "translationese", "윤문", "번역투"],
+  "keywords": ["japanese", "humanize", "ai-detector", "translationese", "rewrite"],
   "skills": ["./.claude/skills/"]
 }

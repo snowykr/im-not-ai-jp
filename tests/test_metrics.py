@@ -1,28 +1,39 @@
-"""Tests for humanize-ko v1.6 metrics module.
+"""Tests for legacy upstream Korean v1.6 metrics module.
 
 Runs under either pytest or unittest. Imports the metrics module from its
-location under .claude/skills/humanize-korean/references/.
+location under legacy/upstream-korean/claude/humanize-korean/references/.
 """
 
 from __future__ import annotations
 
 import json
+import importlib.util
 import os
-import sys
 import tempfile
+import types
 import unittest
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.abspath(os.path.join(HERE, ".."))
 METRICS_DIR = os.path.join(
-    PROJECT_ROOT, ".claude", "skills", "humanize-korean", "references"
+    PROJECT_ROOT, "legacy", "upstream-korean", "claude", "humanize-korean", "references"
 )
-sys.path.insert(0, METRICS_DIR)
 
-import metrics  # noqa: E402  (sys.path mutation is intentional)
+
+def load_metrics_module() -> types.ModuleType:
+    module_path = os.path.join(METRICS_DIR, "metrics.py")
+    spec = importlib.util.spec_from_file_location("legacy_metrics", module_path)
+    if spec is None or spec.loader is None:
+        raise ImportError(module_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+metrics = load_metrics_module()
 
 BASELINE_PATH = os.path.join(
-    PROJECT_ROOT, "_workspace", "v1.6-2026-05-06", "02_katfish_baseline.json"
+    METRICS_DIR, "baseline.json"
 )
 
 

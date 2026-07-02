@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Humanize KR — Claude Code + Codex CLI + Gemini CLI 전역 설치 스크립트
+# im-not-ai-jp — Claude Code + Codex CLI + Gemini CLI 전역 설치 스크립트
 # 저장소를 클론한 뒤 `./install.sh` 한 번이면 설치된 CLI(claude/codex/gemini)를 자동 감지해
-# humanize-korean 스킬(+ 에이전트)을 전역으로 연결한다. 기본은 심링크(저장소 수정 즉시 반영).
+# humanize-japanese 스킬(+ 에이전트)을 전역으로 연결한다. 기본은 심링크(저장소 수정 즉시 반영).
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -20,9 +20,9 @@ print_help() {
   cat <<'H'
 Usage: ./install.sh [options]
 
-  설치된 CLI를 자동 감지해 humanize-korean 스킬을 전역 설치한다.
-  Claude: ~/.claude/skills/{humanize-korean,humanize,humanize-redo} + ~/.claude/agents/*.md
-  Codex : ~/.codex/skills/humanize-korean
+  설치된 CLI를 자동 감지해 humanize-japanese 스킬을 전역 설치한다.
+  Claude: ~/.claude/skills/{humanize-japanese,humanize,humanize-redo} + ~/.claude/agents/*.md
+  Codex : ~/.codex/skills/humanize-japanese
   Gemini: gemini extensions link (gemini-extension.json + GEMINI.md + commands/)
 
 Options:
@@ -92,7 +92,7 @@ install_one() {
 if [ "$DO_CLAUDE" != no ] && { [ "$DO_CLAUDE" = yes ] || command -v claude >/dev/null 2>&1; }; then
   echo "== Claude Code =="
   run mkdir -p "$CLAUDE_HOME/skills" "$CLAUDE_HOME/agents"
-  for s in humanize-korean humanize humanize-redo; do
+  for s in humanize-japanese humanize humanize-redo; do
     install_one "$REPO/.claude/skills/$s" "$CLAUDE_HOME/skills/$s"
   done
   for a in "$REPO/agents"/*.md; do
@@ -106,7 +106,7 @@ fi
 if [ "$DO_CODEX" != no ] && { [ "$DO_CODEX" = yes ] || command -v codex >/dev/null 2>&1; }; then
   echo "== Codex CLI =="
   run mkdir -p "$CODEX_HOME/skills"
-  install_one "$REPO/codex/skills/humanize-korean" "$CODEX_HOME/skills/humanize-korean"
+  install_one "$REPO/codex/skills/humanize-japanese" "$CODEX_HOME/skills/humanize-japanese"
 else
   echo "== Codex CLI: 건너뜀 (codex 미감지 — 강제하려면 --codex-only) =="
 fi
@@ -118,7 +118,7 @@ if [ "$DO_GEMINI" != no ] && { [ "$DO_GEMINI" = yes ] || command -v gemini >/dev
     echo "+ gemini extensions link $REPO (dry-run)"
   else
     echo "gemini extensions link \"$REPO\" 실행 (확장 등록)..."
-    echo "Y" | gemini extensions link "$REPO" 2>/dev/null && echo "installed: Gemini extension (im-not-ai)" \
+    echo "Y" | gemini extensions link "$REPO" 2>/dev/null && echo "installed: Gemini extension (im-not-ai-jp)" \
       || echo "  (이미 등록됨 또는 수동 등록 필요: gemini extensions link $REPO)"
   fi
 else
@@ -127,8 +127,8 @@ fi
 
 echo ""
 echo "완료 (mode=$MODE)."
-echo "  Claude: 새 세션에서 /humanize-korean (또는 /humanize)"
-echo "  Codex : \$humanize-korean"
-echo "  Gemini: 새 세션에서 /humanize-korean (또는 /humanize)"
+echo "  Claude: 새 세션에서 /humanize-japanese (또는 /humanize)"
+echo "  Codex : \$humanize-japanese"
+echo "  Gemini: 새 세션에서 /humanize-japanese (또는 /humanize)"
 echo "  업데이트: ./update.sh (새 버전 자동 감지 + 적용) · 제거: ./uninstall.sh"
 exit 0
