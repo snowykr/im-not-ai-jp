@@ -1,0 +1,42 @@
+{
+  "name": "im-not-ai-codex",
+  "version": "0.1.0",
+  "description": "Codex plugin for humanizing Japanese AI-written text with a Fast default mode and explicit strict subagent workflow.",
+  "author": {
+    "name": "snowykr",
+    "url": "https://github.com/snowykr"
+  },
+  "homepage": "https://github.com/snowykr/im-not-ai-jp",
+  "repository": "https://github.com/snowykr/im-not-ai-jp",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "codex-plugin",
+    "japanese",
+    "writing",
+    "humanize",
+    "ai-detection"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Humanize JP for Codex",
+    "shortDescription": "Remove Japanese AI-like texture while preserving meaning.",
+    "longDescription": "Humanize JP for Codex provides the humanize-japanese skill. Normal use runs a single-call Fast path; strict precision is available only when the user explicitly requests a Codex subagent workflow.",
+    "developerName": "snowykr",
+    "category": "Writing",
+    "capabilities": [
+      "Skills",
+      "Writing",
+      "Japanese Editing"
+    ],
+    "websiteURL": "https://github.com/snowykr/im-not-ai-jp",
+    "privacyPolicyURL": "https://github.com/snowykr/im-not-ai-jp#privacy",
+    "termsOfServiceURL": "https://github.com/snowykr/im-not-ai-jp#license",
+    "defaultPrompt": [
+      "$humanize-japanese この日本語のAIっぽさを消して:",
+      "$humanize-japanese strict で精密検証しながら自然な日本語に整えて:"
+    ],
+    "brandColor": "#2563EB",
+    "screenshots": []
+  }
+}

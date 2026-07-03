@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# im-not-ai-jp — Claude Code + Codex CLI + Gemini CLI 전역 설치 스크립트
-# 저장소를 클론한 뒤 `./install.sh` 한 번이면 설치된 CLI(claude/codex/gemini)를 자동 감지해
-# humanize-japanese 스킬(+ 에이전트)을 전역으로 연결한다. 기본은 심링크(저장소 수정 즉시 반영).
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -20,31 +17,31 @@ print_help() {
   cat <<'H'
 Usage: ./install.sh [options]
 
-  설치된 CLI를 자동 감지해 humanize-japanese 스킬을 전역 설치한다.
+  Detect installed CLIs and install the humanize-japanese skill globally.
   Claude: ~/.claude/skills/{humanize-japanese,humanize,humanize-redo} + ~/.claude/agents/*.md
-  Codex : ~/.codex/skills/humanize-japanese
+  Codex : ~/.codex/skills/humanize-japanese (native plugin skill source)
   Gemini: gemini extensions link (gemini-extension.json + GEMINI.md + commands/)
 
 Options:
-  --copy          심링크 대신 복사(저장소를 지워도 유지, references 심링크는 실체화).
-                  ※ 복사본은 uninstall.sh가 자동 삭제하지 않음(수동 삭제).
-  --claude-only   Claude만 설치
-  --codex-only    Codex만 설치
-  --gemini-only   Gemini만 설치
-  --no-gemini     Gemini 건너뜀 (claude/codex만)
-  --force         대상에 일반 파일/디렉토리가 있어도 .bak.<ts> 백업 후 덮어씀
-  --dry-run       실제 변경 없이 수행할 작업만 출력
-  -h, --help      이 도움말
+  --copy          Copy instead of symlink. Reference symlinks are materialized.
+                  Copied installs are preserved by uninstall.sh.
+  --claude-only   Install Claude targets only.
+  --codex-only    Install Codex targets only.
+  --gemini-only   Install Gemini targets only.
+  --no-gemini     Skip Gemini and install only Claude/Codex targets.
+  --force         Back up existing files/directories as .bak.<ts> and replace them.
+  --dry-run       Print planned changes without modifying files.
+  -h, --help      Show this help.
 
-Env overrides: CLAUDE_HOME(기본 ~/.claude), CODEX_HOME(기본 ~/.codex)
+Env overrides: CLAUDE_HOME(default ~/.claude), CODEX_HOME(default ~/.codex)
 H
 }
 
 while [ $# -gt 0 ]; do
   case "$1" in
     --copy) MODE=copy ;;
-    --claude-only) DO_CODEX=no; DO_GEMINI=no ;;
-    --codex-only) DO_CLAUDE=no; DO_GEMINI=no ;;
+    --claude-only) DO_CLAUDE=yes; DO_CODEX=no; DO_GEMINI=no ;;
+    --codex-only) DO_CLAUDE=no; DO_CODEX=yes; DO_GEMINI=no ;;
     --gemini-only) DO_CLAUDE=no; DO_CODEX=no; DO_GEMINI=yes ;;
     --no-gemini) DO_GEMINI=no ;;
     --force) FORCE=1 ;;
@@ -57,7 +54,14 @@ done
 
 run() { echo "+ $*"; [ "$DRYRUN" = 1 ] || "$@"; }
 
-# rc: 0=대상 비었음(설치 진행) / 1=이미 우리 심링크(스킵) / 2=충돌(거부)
+has_claude_target() {
+  command -v claude >/dev/null 2>&1 || [ -d "$CLAUDE_HOME" ]
+}
+
+has_codex_target() {
+  command -v codex >/dev/null 2>&1 || [ -d "$CODEX_HOME" ]
+}
+
 prepare_target() {
   local dest="$1" src="$2"
   if [ -L "$dest" ]; then
@@ -67,7 +71,7 @@ prepare_target() {
     run mv "$dest" "$dest.bak.$TS"
   elif [ -e "$dest" ]; then
     if [ "$FORCE" != 1 ]; then
-      echo "refuse: $dest 가 이미 있음 (--force 로 백업 후 덮어쓰기 또는 --copy)"; return 2
+      echo "refuse: $dest already exists (use --force to back it up and replace it, or use --copy)"; return 2
     fi
     run mv "$dest" "$dest.bak.$TS"
   fi
@@ -83,13 +87,13 @@ install_one() {
   [ "$rc" = 2 ] && return 1
   case "$MODE" in
     symlink) run ln -s "$src" "$dest" ;;
-    copy)    run cp -RL "$src" "$dest" ;;   # -L: references 심링크를 실체로 복사
+    copy)    run cp -RL "$src" "$dest" ;;
   esac
   echo "installed: $dest"
 }
 
 # ---- Claude ----
-if [ "$DO_CLAUDE" != no ] && { [ "$DO_CLAUDE" = yes ] || command -v claude >/dev/null 2>&1; }; then
+if [ "$DO_CLAUDE" != no ] && { [ "$DO_CLAUDE" = yes ] || has_claude_target; }; then
   echo "== Claude Code =="
   run mkdir -p "$CLAUDE_HOME/skills" "$CLAUDE_HOME/agents"
   for s in humanize-japanese humanize humanize-redo; do
@@ -99,16 +103,16 @@ if [ "$DO_CLAUDE" != no ] && { [ "$DO_CLAUDE" = yes ] || command -v claude >/dev
     install_one "$a" "$CLAUDE_HOME/agents/$(basename "$a")"
   done
 else
-  echo "== Claude Code: 건너뜀 (claude 미감지 — 강제하려면 --claude-only) =="
+  echo "== Claude Code: skipped (claude or $CLAUDE_HOME not detected; use --claude-only to force) =="
 fi
 
 # ---- Codex ----
-if [ "$DO_CODEX" != no ] && { [ "$DO_CODEX" = yes ] || command -v codex >/dev/null 2>&1; }; then
-  echo "== Codex CLI =="
+if [ "$DO_CODEX" != no ] && { [ "$DO_CODEX" = yes ] || has_codex_target; }; then
+  echo "== Codex =="
   run mkdir -p "$CODEX_HOME/skills"
-  install_one "$REPO/codex/skills/humanize-japanese" "$CODEX_HOME/skills/humanize-japanese"
+  install_one "$REPO/plugins/im-not-ai-codex/skills/humanize-japanese" "$CODEX_HOME/skills/humanize-japanese"
 else
-  echo "== Codex CLI: 건너뜀 (codex 미감지 — 강제하려면 --codex-only) =="
+  echo "== Codex: skipped (codex or $CODEX_HOME not detected; use --codex-only to force) =="
 fi
 
 # ---- Gemini CLI ----
@@ -117,18 +121,18 @@ if [ "$DO_GEMINI" != no ] && { [ "$DO_GEMINI" = yes ] || command -v gemini >/dev
   if [ "$DRYRUN" = 1 ]; then
     echo "+ gemini extensions link $REPO (dry-run)"
   else
-    echo "gemini extensions link \"$REPO\" 실행 (확장 등록)..."
+    echo "Running gemini extensions link \"$REPO\"..."
     echo "Y" | gemini extensions link "$REPO" 2>/dev/null && echo "installed: Gemini extension (im-not-ai-jp)" \
-      || echo "  (이미 등록됨 또는 수동 등록 필요: gemini extensions link $REPO)"
+      || echo "  (already registered, or manual registration is required: gemini extensions link $REPO)"
   fi
 else
-  echo "== Gemini CLI: 건너뜀 (gemini 미감지 — 강제하려면 --gemini-only) =="
+  echo "== Gemini CLI: skipped (gemini not detected; use --gemini-only to force) =="
 fi
 
 echo ""
-echo "완료 (mode=$MODE)."
-echo "  Claude: 새 세션에서 /humanize-japanese (또는 /humanize)"
+echo "Done (mode=$MODE)."
+echo "  Claude: use /humanize-japanese (or /humanize) in a new session"
 echo "  Codex : \$humanize-japanese"
-echo "  Gemini: 새 세션에서 /humanize-japanese (또는 /humanize)"
-echo "  업데이트: ./update.sh (새 버전 자동 감지 + 적용) · 제거: ./uninstall.sh"
+echo "  Gemini: use /humanize-japanese (or /humanize) in a new session"
+echo "  Update: ./update.sh · Uninstall: ./uninstall.sh"
 exit 0

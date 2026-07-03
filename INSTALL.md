@@ -1,6 +1,6 @@
 # Install
 
-`im-not-ai-jp` installs a Japanese Fast Path skill into supported local AI coding CLIs.
+`im-not-ai-jp` installs a Japanese Fast Path skill into supported local AI coding CLIs. Codex users should prefer the native Codex plugin path; direct skill symlinks remain as a compatibility path.
 
 This repository is private during incubation. Install commands below assume you have access to `snowykr/im-not-ai-jp`; do not treat them as public release instructions until the repository is intentionally made public.
 
@@ -29,15 +29,34 @@ Use in a new Claude Code session:
 
 ## Codex CLI
 
+Recommended native plugin install:
+
+```bash
+git clone https://github.com/snowykr/im-not-ai-jp.git
+cd im-not-ai-jp
+codex plugin marketplace add .
+codex plugin add im-not-ai-codex@im-not-ai-jp
+```
+
+Use in Codex:
+
+```text
+$humanize-japanese
+```
+
+Normal calls use Fast default mode. Strict precision runs only when the user explicitly asks for `strict`, `精密`, `subagent`, or `parallel review`; the plugin then follows a Codex subagent workflow and keeps pasted text as data rather than instructions.
+
+Compatibility path for environments without `codex plugin`:
+
 ```bash
 ./install.sh --codex-only
 ```
 
 Installs:
 
-- `~/.codex/skills/humanize-japanese`
+- `~/.codex/skills/humanize-japanese` linked to `plugins/im-not-ai-codex/skills/humanize-japanese`
 
-Use in Codex:
+Direct skill usage is the same:
 
 ```text
 $humanize-japanese
@@ -80,6 +99,8 @@ For this repo's own updates:
 
 ```bash
 git pull --ff-only
+codex plugin marketplace add .
+codex plugin add im-not-ai-codex@im-not-ai-jp
 ./install.sh
 ```
 
@@ -91,4 +112,4 @@ Use `./update.sh --check` to inspect whether the configured tracking branch has 
 ./uninstall.sh
 ```
 
-The uninstall script removes only symlinks that point back to this repository. It does not remove copied installs or backups.
+The uninstall script removes the native Codex plugin install and symlinks that point back to this repository. It does not remove copied installs or backups.

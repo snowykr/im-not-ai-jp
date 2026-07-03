@@ -1,0 +1,20 @@
+{
+  "name": "im-not-ai-jp",
+  "interface": {
+    "displayName": "im-not-ai-jp"
+  },
+  "plugins": [
+    {
+      "name": "im-not-ai-codex",
+      "source": {
+        "source": "local",
+        "path": "./plugins/im-not-ai-codex"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Writing"
+    }
+  ]
+}

@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-# im-not-ai-jp — 전역 설치 제거 스크립트
-# install.sh가 만든 "이 저장소를 가리키는 심링크"만 제거한다. 사용자가 직접 둔 파일이나
-# 다른 곳을 가리키는 링크, .bak.* 백업은 건드리지 않는다. (--copy 설치본은 자동 삭제 대상 아님)
 set -euo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -17,31 +14,60 @@ case "${1:-}" in
 esac
 
 remove_if_ours() {
-  local dest="$1" src="$2"
-  if [ -L "$dest" ] && [ "$(readlink "$dest")" = "$src" ]; then
-    echo "+ rm $dest"; [ "$DRYRUN" = 1 ] || rm "$dest"
-  elif [ -e "$dest" ]; then
-    echo "skip (우리 것 아님): $dest"
+  local dest="$1"
+  shift
+  if [ -L "$dest" ]; then
+    local actual
+    actual="$(readlink "$dest")"
+    local src
+    for src in "$@"; do
+      if [ "$actual" = "$src" ]; then
+        echo "+ rm $dest"; [ "$DRYRUN" = 1 ] || rm "$dest"
+        return 0
+      fi
+    done
   fi
+  if [ -e "$dest" ]; then
+    echo "skip (not managed by this repository): $dest"
+  fi
+  return 0
+}
+
+remove_codex_plugin_if_installed() {
+  if ! command -v codex >/dev/null 2>&1; then
+    return 0
+  fi
+
+  if [ "$DRYRUN" = 1 ]; then
+    echo "+ codex plugin remove im-not-ai-codex@im-not-ai-jp (dry-run)"
+    return 0
+  fi
+
+  codex plugin remove im-not-ai-codex@im-not-ai-jp --json >/dev/null 2>&1 \
+    && echo "removed: Codex plugin (im-not-ai-codex@im-not-ai-jp)" \
+    || echo "  (Codex plugin is not installed or was already removed)"
 }
 
 for s in humanize-japanese humanize humanize-redo; do
   remove_if_ours "$CLAUDE_HOME/skills/$s" "$REPO/.claude/skills/$s"
 done
-remove_if_ours "$CODEX_HOME/skills/humanize-japanese" "$REPO/codex/skills/humanize-japanese"
+remove_codex_plugin_if_installed
+remove_if_ours "$CODEX_HOME/skills/humanize-japanese" \
+  "$REPO/plugins/im-not-ai-codex/skills/humanize-japanese" \
+  "$REPO/codex/skills/humanize-japanese"
 for a in "$REPO/agents"/*.md; do
   remove_if_ours "$CLAUDE_HOME/agents/$(basename "$a")" "$a"
 done
 
 # ---- Gemini CLI ----
 if command -v gemini >/dev/null 2>&1; then
-  echo "Gemini extension 제거 시도..."
+  echo "Trying to remove the Gemini extension..."
   if [ "$DRYRUN" = 1 ]; then
     echo "+ gemini extensions uninstall im-not-ai-jp (dry-run)"
   else
     gemini extensions uninstall im-not-ai-jp 2>/dev/null && echo "removed: Gemini extension (im-not-ai-jp)" \
-      || echo "  (Gemini extension 미설치 또는 이미 제거됨)"
+      || echo "  (Gemini extension is not installed or was already removed)"
   fi
 fi
 
-echo "제거 완료. (.bak.* 백업·--copy 설치본은 보존)"
+echo "アンインストール完了。(.bak.* バックアップと --copy で作成したコピーは保持されます)"
