@@ -1,38 +1,55 @@
-# im-not-ai-jp
+# Humanize JP — 日本語 AI 文体リライター
 
-Japanese adaptation of `epoko77-ai/im-not-ai` for making AI-generated Japanese drafts read less templated, less translation-like, and more naturally authored.
+`im-not-ai-jp` は、AI が作成した日本語の下書きを、意味を保ったまま自然な日本語へ整えるためのローカル CLI スキル集です。内容、事実、数値、固有名詞、引用、専門用語は残し、文体、リズム、言い回し、説明の密度だけを必要な範囲で調整します。
 
-This project is **not** a direct Japanese translation of the Korean rule set. It keeps the original repository structure, installer approach, and multi-CLI packaging as the starting point, but the Japanese detection taxonomy, rewriting rules, prompts, and examples are maintained independently here.
+このリポジトリは [`epoko77-ai/im-not-ai`](https://github.com/epoko77-ai/im-not-ai) を出発点にした日本語版です。ただし、韓国語版の分類をそのまま翻訳するのではなく、日本語の敬体/常体、敬語、翻訳調、読点、名詞化、主語や代名詞の出方に合わせて、ルールと例を独立して管理します。
 
-## Attribution
+## 何をするものか
 
-This repository began as an independent mirror-based adaptation of [`epoko77-ai/im-not-ai`](https://github.com/epoko77-ai/im-not-ai), licensed under the MIT License.
+AI 生成文は、事実としては正しくても、次のような「整いすぎた」癖が残ることがあります。
 
-- Original copyright notice is preserved in [`LICENSE`](LICENSE).
-- Project-level derivation is documented in [`NOTICE`](NOTICE).
-- Legacy Korean upstream material is retained under [`legacy/upstream-korean/`](legacy/upstream-korean/) for reference only and is not installed by default.
+- `また`、`さらに`、`そのため` のような文頭接続が機械的に続く。
+- `〜することができます`、`〜において`、`〜を通じて`、`〜に関して` が多く、翻訳調に見える。
+- `重要です`、`必要があります`、`〜と言えるでしょう` のような結論表現が定型化する。
+- すべての文が同じ長さ、同じ語尾、同じ説明順で並ぶ。
+- 箇条書き、見出し、要約が過剰で、本文の流れより型が目立つ。
+- 日本語では省略できる `私`、`あなた`、`彼`、`それ`、`これ` が不自然に残る。
 
-## Current Scope
+`im-not-ai-jp` は、こうした箇所を「AI が書いた証拠」として断定するのではなく、読みやすくするための書き換え候補として扱います。
 
-`im-not-ai-jp` focuses on Japanese AI-writing tells such as:
+## 基本方針
 
-- uniform polite style and monotone sentence endings
-- overused explanation templates like `重要です`, `必要があります`, `〜と言えるでしょう`
-- translation-like structures such as `〜することができます`, `〜において`, `〜を通じて`
-- mechanical headings, bullet rhythm, and conclusion pivots
-- unnecessary emphasis, balanced-but-empty framing, and generic value-claim language
+1. **意味を変えない**
+   事実、主張、数値、日付、固有名詞、引用、専門用語は保持します。
 
-The first public milestone is a Fast Path skill for Claude Code, Codex CLI, and Gemini CLI. The stricter multi-agent Japanese taxonomy is intentionally separate future work.
+2. **必要な箇所だけ直す**
+   文章全体を別物にせず、繰り返し、翻訳調、過剰な説明、語尾の単調さなど、目立つ箇所だけを調整します。
 
-## Visibility Policy
+3. **ジャンルとレジスターを保つ**
+   ビジネスメール、ヘルプ文書、技術文書、ブログ、創作文では自然さの基準が違います。敬体、常体、である調、敬語の役割を勝手に変えません。
 
-This repository stays **private during incubation**. It should only be made public after the Japanese taxonomy, examples, install flow, and project documentation are strong enough to represent an independent public project.
+4. **過剰な人間化を避ける**
+   あえて崩した表現、砕けた語尾、余計な感情表現を足して「人間らしさ」を作ることはしません。
 
-Until then, treat `snowykr/im-not-ai-jp` as a private working repository, not a public fork, marketplace package, or announced release.
+## 日本語向けの抑制ポイント
 
-## Install
+このプロジェクトでは、韓国語版の考え方を参考にしつつ、日本語で目立ちやすい次の特徴を中心に扱います。
 
-Clone this independent repository:
+| 領域 | 見るポイント | 書き換えの方向 |
+| --- | --- | --- |
+| 繰り返し | 同じ接続詞、同じ文型、同じ抽象名詞、同じ語尾 | 不要な接続を削る。短文と中程度の文を混ぜる。 |
+| 翻訳調・post-editese | `〜することができます`、`〜において`、`〜を通じて`、`〜に関して` | 可能形、具体的な動詞、自然な助詞へ寄せる。 |
+| 名詞化 | `こと` や `の` が重なる長い名詞句 | 動詞を戻し、主語と述語の関係を見えやすくする。 |
+| 敬語・丁寧さ | 尊敬語、謙譲語、丁寧語、社内外の立場関係 | 話し手、聞き手、顧客、自社、第三者の関係を保つ。 |
+| 読みやすさ | 長すぎる文、読点の偏り、漢字/かな/カタカナの密度 | 文を分ける。必要な用語は残し、説明の詰め込みを減らす。 |
+| 代名詞と主語 | `私`、`あなた`、`彼`、`彼女`、`それ`、`これ` の直訳的な残り方 | 日本語の情報構造に合わせて省略または言い換える。 |
+| 型の目立つ構成 | 過剰な見出し、番号付きリスト、定型的な結論 | 本文の流れに必要な構造だけ残す。 |
+
+これらは検出器の判定基準ではありません。文章を自然にするための編集観点です。
+
+## 使い方
+
+リポジトリを取得してインストールします。
 
 ```bash
 git clone https://github.com/snowykr/im-not-ai-jp.git
@@ -40,13 +57,15 @@ cd im-not-ai-jp
 ./install.sh
 ```
 
-Installed entry points:
+対応している入口は次の通りです。
 
-- Claude Code: `/humanize-japanese`
-- Codex CLI: `$humanize-japanese`
-- Gemini CLI: `/humanize-japanese`
+| ツール | 呼び出し方 |
+| --- | --- |
+| Claude Code | `/humanize-japanese` |
+| Codex CLI | `$humanize-japanese` |
+| Gemini CLI | `/humanize-japanese` |
 
-Single-tool installs:
+必要に応じて、特定のツールだけにインストールできます。
 
 ```bash
 ./install.sh --claude-only
@@ -54,22 +73,55 @@ Single-tool installs:
 ./install.sh --gemini-only
 ```
 
-Remove symlink installs:
+削除する場合は次を実行します。
 
 ```bash
 ./uninstall.sh
 ```
 
-## Upstream Policy
+詳しいオプションは [`INSTALL.md`](INSTALL.md) を参照してください。
 
-The original project remains useful as a read-only upstream for common infrastructure fixes. This project may cherry-pick installer, packaging, CI, or documentation infrastructure patches from `epoko77-ai/im-not-ai` with attribution, preferably using:
+## 例
 
-```bash
-git cherry-pick -x <upstream-commit>
+入力:
+
+```text
+また、この機能を活用することによって、利用者は手続きを円滑に進めることができます。これにより、業務効率の向上が期待されると言えるでしょう。
 ```
 
-Japanese language rules, examples, prompts, and evaluation material should be developed independently in this repository.
+出力例:
 
-## Status
+```text
+この機能を使うと、利用者は手続きを進めやすくなります。業務効率の向上にもつながります。
+```
 
-This is the initial project split. The Japanese quick rules are intentionally compact and should be expanded with real Japanese corpora, model outputs, and reviewer feedback before any strict detection claims are made.
+この例では、文頭の機械的な接続、`活用することによって`、`進めることができます`、`期待されると言えるでしょう` のような定型表現を整理しています。意味を変えず、言い切りと文の長さだけを整えます。
+
+## 守るもの
+
+次の内容は原則として書き換えません。
+
+- 数値、単位、日付
+- 人名、組織名、製品名、モデル名
+- 直接引用
+- 法律、規約、仕様の文言
+- API 名、UI ラベル、コマンド、コード片
+- 専門用語やプロジェクト固有の表記
+
+不自然さを減らすためのツールであり、本文の事実関係を作り替えるためのツールではありません。
+
+## 上流プロジェクトとの関係
+
+このプロジェクトは、MIT License の [`epoko77-ai/im-not-ai`](https://github.com/epoko77-ai/im-not-ai) から派生した日本語適応版です。
+
+- 元プロジェクトの著作権表示は [`LICENSE`](LICENSE) に保持しています。
+- 派生関係と保持している上流素材については [`NOTICE`](NOTICE) に記載しています。
+- 参考用の韓国語上流素材は [`legacy/upstream-korean/`](legacy/upstream-korean/) に残していますが、通常のインストール対象ではありません。
+
+上流から取り込む対象は、主にインストーラ、パッケージング、CI、ドキュメント構造などの共通インフラです。日本語のルール、例、プロンプト、評価材料はこのリポジトリで独立して更新します。
+
+## 限界
+
+`im-not-ai-jp` は、文章が AI によって書かれたかどうかを証明するものではありません。日本語の文体上の癖を見つけ、読みやすく整えるための編集支援です。
+
+厳密な判定やスコアリングを行うには、同じジャンル、長さ、用途の日本語コーパスで検証した基準が必要です。このリポジトリでは、未検証の特徴を断定的な AI 判定として扱いません。
