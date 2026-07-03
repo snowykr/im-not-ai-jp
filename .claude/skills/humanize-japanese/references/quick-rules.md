@@ -33,6 +33,15 @@ Japanese can repeat endings for legitimate genre reasons.
 - Reduce modal softener monotony such as repeated `かもしれません`,
   `と思われます`, `重要です`, `期待されます`, and `考えられます`.
 - Do not humanize by random casualization. Register shifts carry social meaning.
+- Use these register target names when a workflow needs an explicit target:
+  `plain`, `neutral`, `polite`, `formal`, `customer_service_polite`.
+- Before: `本サービスを利用することができます。`
+  After: `本サービスを利用できます。`
+- Before: `ご確認いただけますと幸いです。ご連絡いただけますと幸いです。`
+  After: `ご確認のうえ、ご連絡ください。`
+- Do not rewrite: `このAPIは、認証後にのみ呼び出せます。`
+  This is already direct technical prose; making it casual or adding softeners
+  would change the register without improving readability.
 
 ## translationese_posteditese
 
@@ -43,6 +52,9 @@ some genres intentionally use translated, academic, legal, or technical style.
 
 - Replace mechanical ability constructions such as `〜することができます` with
   direct potential forms or simpler verbs when safe.
+- Track the cue categories as style-risk categories only: overt pronouns,
+  source-order connectives, inanimate subjects, nominalization chains, and
+  calque-like phrasing. They are rewrite/style-risk cues, not detector claims.
 - Review overused formal frames: `〜において`, `〜を通じて`, `〜に関して`,
   `〜ということ`, `〜であるという点`, and `〜することが可能です`.
 - Reduce source-order connective overuse, especially sentence-initial `また`,
@@ -52,6 +64,13 @@ some genres intentionally use translated, academic, legal, or technical style.
   Japanese information structure would naturally omit or reframe them.
 - Check abstract or inanimate subjects used as agents, passive/causative stacks,
   and nominalization chains such as repeated `〜の〜の` or `〜における〜の`.
+- Before: `この変更は、利用者に新しい画面を表示させます。`
+  After: `この変更により、利用者には新しい画面が表示されます。`
+- Before: `あなたは設定画面において通知を変更することができます。`
+  After: `設定画面で通知を変更できます。`
+- Do not rewrite: `彼女は取締役として契約書に署名しました。`
+  The pronoun identifies a real person in context; omitting it could obscure
+  who acted.
 
 ## readability_texture
 
@@ -62,12 +81,25 @@ Japanese may be correct for expert, legal, academic, or reference genres.
 
 - Balance sentence length, paragraph length, and bullet density against the
   target genre.
+- Use Japanese punctuation deliberately: `、` should clarify clause boundaries,
+  and `。` should close complete thoughts. Do not scatter punctuation only to
+  imitate a different rhythm.
+- Watch clause length, not only sentence length. Split or reorder when a reader
+  must hold too many modifiers before reaching the main verb.
 - Soften dense compounds and long noun chains when a concrete verb or shorter
   phrase preserves meaning.
 - Watch kanji/kana/katakana balance, loanword density, and repeated abstract
   nouns such as `活用`, `推進`, `実現`, and `向上`.
+- Keep kanji/kana balance natural for the audience: over-converting kanji to
+  kana can look childish or vague, while dense kanji chains can slow scanning.
+- Avoid over-simplification. Do not remove legally, technically, or socially
+  necessary distinctions just to make a sentence shorter.
 - Keep necessary product names, API names, UI labels, units, citations, and
   domain terminology unchanged unless the user asks for terminology rewriting.
+- Before: `利用開始前に管理者による権限設定確認作業の実施が必要です。`
+  After: `利用を開始する前に、管理者による権限設定の確認が必要です。`
+- Do not rewrite: `本契約に基づく損害賠償責任は、直接かつ通常の損害に限ります。`
+  This legal wording may need the dense terms and punctuation as written.
 
 ## honorific_politeness_safety
 
@@ -91,18 +123,24 @@ style, readability, and register guidance.
 Claim ceiling: Genre mismatch is a rewrite cue, not authorship proof; follow the
 user's stated target when it conflicts with these defaults.
 
-- `public/help`: approachable `です/ます`, easy Japanese when the audience is
-  broad, shorter sentences, accessible terms, concrete actions, and fewer
-  formulaic conclusions.
+- `official_notice`: formal public-facing prose, stable terminology, dates and
+  obligations intact, and no casual drift.
+- `public_help` (legacy label `public/help`): approachable `です/ます`, easy Japanese
+  when the audience is broad, shorter sentences, accessible terms, concrete
+  actions, and fewer formulaic conclusions.
 - `technical`: concise wording, stable terminology, notation consistency,
   API names, UI labels, units, and minimal affective softeners.
-- `essay/blog`: controlled stance, varied rhythm, and fewer template headings or
+- `business_email` (legacy label `business email`): identify speaker, listener,
+  company, customer/user, and third-party roles before changing honorifics; keep
+  clear requests and no casual tone drift.
+- `product_ui`: concise labels, consistent verbs, no ornamental politeness, and
+  product terms unchanged.
+- `essay_blog`: controlled stance, varied rhythm, and fewer template headings or
   summary paragraphs.
-- `business email`: identify speaker, listener, company, customer/user, and
-  third-party roles before changing honorifics; keep clear requests and no casual
-  tone drift.
 - `creative`: preserve voice, image, dialogue, pacing, and intentional
   irregularity.
+- Do not rewrite: genre names are routing labels for style, not evidence that a
+  text is machine-written or model-specific.
 
 ## stylometric_diagnostics
 

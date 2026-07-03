@@ -20,6 +20,48 @@ _RULE_HEADINGS = (
     "genre_preset",
     "stylometric_diagnostics",
 )
+_REGISTER_TARGETS = ("plain", "neutral", "polite", "formal", "customer_service_polite")
+_GENRE_PROFILES = (
+    "official_notice",
+    "public_help",
+    "technical",
+    "business_email",
+    "product_ui",
+    "essay_blog",
+    "creative",
+)
+_TRANSLATIONESE_CUE_CATEGORIES = (
+    "overt pronouns",
+    "source-order connectives",
+    "inanimate subjects",
+    "nominalization chains",
+    "calque-like phrasing",
+)
+_PUNCTUATION_READABILITY_CUES = (
+    "`、`",
+    "`。`",
+    "clause length",
+    "kanji/kana balance",
+    "over-simplification",
+)
+_EXAMPLE_MARKERS = ("Before:", "After:", "Do not rewrite:")
+_SECTION_EXAMPLES = {
+    "register_monotony": (
+        "本サービスを利用することができます",
+        "本サービスを利用できます",
+        "このAPIは、認証後にのみ呼び出せます。",
+    ),
+    "translationese_posteditese": (
+        "この変更は、利用者に新しい画面を表示させます。",
+        "設定画面で通知を変更できます。",
+        "彼女は取締役として契約書に署名しました。",
+    ),
+    "readability_texture": (
+        "利用開始前に管理者による権限設定確認作業の実施が必要です。",
+        "利用を開始する前に、管理者による権限設定の確認が必要です。",
+        "本契約に基づく損害賠償責任は、直接かつ通常の損害に限ります。",
+    ),
+}
 
 
 def _quick_rules_text() -> str:
@@ -115,9 +157,11 @@ def _assert_shipped_quick_rules(rule_text: str) -> None:
     _assert_phrases(
         _rule_section(rule_text, "genre_preset"),
         (
-            "`public/help`",
+            "`public_help`",
+            "legacy label `public/help`",
             "`technical`",
-            "`business email`",
+            "`business_email`",
+            "legacy label `business email`",
             "easy Japanese",
             "API names",
             "speaker, listener",
@@ -137,11 +181,47 @@ def _assert_shipped_quick_rules(rule_text: str) -> None:
     )
 
 
+def _assert_shipped_quick_rules_include_japanese_examples(rule_text: str) -> None:
+    _assert_phrases(
+        _rule_section(rule_text, "register_monotony"),
+        _REGISTER_TARGETS,
+        "register-target-names",
+    )
+    _assert_phrases(
+        _rule_section(rule_text, "genre_preset"),
+        _GENRE_PROFILES,
+        "genre-profile-names",
+    )
+    _assert_phrases(
+        _rule_section(rule_text, "translationese_posteditese"),
+        _TRANSLATIONESE_CUE_CATEGORIES,
+        "translationese-cue-categories",
+    )
+    _assert_phrases(
+        _rule_section(rule_text, "readability_texture"),
+        _PUNCTUATION_READABILITY_CUES,
+        "punctuation-readability-cues",
+    )
+    for heading, examples in _SECTION_EXAMPLES.items():
+        section = _rule_section(rule_text, heading)
+        _assert_phrases(
+            section,
+            _EXAMPLE_MARKERS,
+            f"{heading}-japanese-example-labels",
+        )
+        _assert_phrases(section, examples, f"{heading}-concrete-japanese-examples")
+
+
 class TestJapaneseQuickRules(unittest.TestCase):
     def test_shipped_quick_rules_define_japanese_rule_behavior(self) -> None:
         rule_text = _quick_rules_text()
 
         _assert_shipped_quick_rules(rule_text)
+
+    def test_shipped_quick_rules_include_concrete_japanese_examples(self) -> None:
+        rule_text = _quick_rules_text()
+
+        _assert_shipped_quick_rules_include_japanese_examples(rule_text)
 
     def test_claude_and_codex_rules_stay_in_sync(self) -> None:
         claude_rules = _CLAUDE_QUICK_RULES_PATH.read_text(encoding="utf-8")
@@ -166,4 +246,4 @@ class TestJapaneseQuickRules(unittest.TestCase):
             _assert_shipped_quick_rules(mutated)
 
 if __name__ == "__main__":
-    unittest.main()
+    _ = unittest.main()
