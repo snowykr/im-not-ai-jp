@@ -3,8 +3,10 @@ GEMINI.md and the Humanize Japanese quick rulesに従って、次の日本語テ
 
 手順:
 1. 最初の300字からジャンルを推定します（ビジネス | ブログ | レポート | メール | 公的）。
-2. S1/S2/S3の日本語AI文体シグナルを検出します。固有名詞、数値、日付、引用は対象外です。
-3. 意味とレジスターを保ったまま、該当箇所だけを自然な日本語に直します。
+2. quick-rulesのtaxonomyに沿って、各一致をrewrite cue, not authorship proofとして確認します:
+   cross_language_humanize_controls / register_monotony / translationese_posteditese /
+   readability_texture / honorific_politeness_safety / genre_preset / stylometric_diagnostics。
+3. 必要な場合だけopt-inのeasy_japaneseプロファイルを使い、意味とレジスターを保ったまま該当箇所だけを自然な日本語に直します。
 4. 事実の変化、過度なくだけ方、主張の追加がないか自己検証します。
 5. 結果として、短いステータス、修正カテゴリ、代表的なbefore/afterを返します。
 

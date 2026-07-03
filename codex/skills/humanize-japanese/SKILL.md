@@ -12,9 +12,17 @@ Japanese-only Fast Path for reducing AI-like prose while preserving meaning.
 1. Preserve facts, claims, numbers, dates, proper nouns, citations, and direct quotes.
 2. Keep the original genre and register.
 3. Read `references/quick-rules.md` from this skill directory before rewriting.
-4. Rewrite only spans that match the Japanese quick rules.
-5. Do not add new claims or examples.
-6. If the input is not primarily Japanese, explain that this skill handles Japanese text only.
+4. Treat every match as a rewrite cue, not authorship proof.
+5. Rewrite only spans that match these Japanese quick-rule sections:
+   `cross_language_humanize_controls`, `register_monotony`,
+   `translationese_posteditese`, `readability_texture`,
+   `honorific_politeness_safety`, `genre_preset`, and
+   `stylometric_diagnostics`.
+6. Use `references/evidence-map.md` for source anchors and claim limits.
+7. Use `easy_japanese` only as an opt-in profile for broad public, welfare,
+   medical, disaster, administrative, or resident-facing text.
+8. Do not add new claims or examples.
+9. If the input is not primarily Japanese, explain that this skill handles Japanese text only.
 
 ## Output
 

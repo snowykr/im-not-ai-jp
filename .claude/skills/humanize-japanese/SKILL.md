@@ -11,7 +11,7 @@ AI生成の日本語テキストを、意味を変えずに文体、リズム、
 ## Principles
 
 1. **意味を変えない**: 事実、主張、数値、日付、固有名詞、引用は保持する。
-2. **検出根拠を持つ**: `references/quick-rules.md`に対応する箇所を中心に直す。
+2. **根拠を限定する**: `references/quick-rules.md`に対応する箇所を中心に直す。各一致はrewrite cue, not authorship proofであり、著者判定には使わない。
 3. **ジャンルを保つ**: ビジネス文書、ブログ、レポート、メールなどの用途を変えない。
 4. **過剰に崩さない**: 丁寧体そのものを悪としない。均一すぎる調子だけを緩める。
 5. **書き換えすぎない**: 変更率が高い場合は、変更理由を明示して保守的に止める。
@@ -22,7 +22,11 @@ AI生成の日本語テキストを、意味を変えずに文体、リズム、
 2. Identify the input text or read the provided `.txt` / `.md` file path.
 3. If the text is not primarily Japanese, explain that this skill handles Japanese text only.
 4. Estimate genre from the first 300 characters unless the user provided one.
-5. Detect AI-like spans using the quick-rule categories.
+5. Review spans using these quick-rule categories:
+   `cross_language_humanize_controls`, `register_monotony`,
+   `translationese_posteditese`, `readability_texture`,
+   `honorific_politeness_safety`, `genre_preset`, and
+   `stylometric_diagnostics`.
 6. Rewrite only the relevant spans while preserving meaning and register.
 7. Self-check:
    - no factual drift
@@ -39,11 +43,13 @@ Natural-language options may appear at the end of the request:
 
 - `ジャンル: ビジネス|ブログ|レポート|メール|公的`
 - `強度: 控えめ|標準|強め`
-- `最小深刻度: S1|S2|S3`
+- `プロファイル: easy_japanese` for broad public, welfare, medical, disaster,
+  administrative, or resident-facing text.
 
 ## References
 
 - `references/quick-rules.md` — current compact Japanese Fast Path rules
+- `references/evidence-map.md` — source anchors and claim ceilings
 
 ## Status
 

@@ -3,7 +3,8 @@
 Shared rules for Japanese style rewriting. Use these as local editing
 controls only: each match is a rewrite cue, not authorship proof. Preserve facts,
 names, numbers, dates, citations, quotes, terminology, genre, and the intended
-register unless the user explicitly asks to change them.
+register unless the user explicitly asks to change them. See `evidence-map.md`
+for source anchors, claim limits, and unshipped research leads.
 
 ## cross_language_humanize_controls
 
@@ -55,6 +56,12 @@ some genres intentionally use translated, academic, legal, or technical style.
 - Track the cue categories as style-risk categories only: overt pronouns,
   source-order connectives, inanimate subjects, nominalization chains, and
   calque-like phrasing. They are rewrite/style-risk cues, not detector claims.
+- Treat overt pronouns, transparent calques, and mechanical ability frames as a
+  safe cue for local review when the surrounding sentence supports the edit.
+- Treat inanimate subjects, passive/causative stacks, connective order,
+  nominalization, and loanword density as a review-only cue unless the genre and
+  corpus context justify a rewrite.
+- Do not blanket-rewrite passive, causative, nominalization, or inanimate subjects.
 - Review overused formal frames: `〜において`, `〜を通じて`, `〜に関して`,
   `〜ということ`, `〜であるという点`, and `〜することが可能です`.
 - Reduce source-order connective overuse, especially sentence-initial `また`,
@@ -128,6 +135,11 @@ user's stated target when it conflicts with these defaults.
 - `public_help` (legacy label `public/help`): approachable `です/ます`, easy Japanese
   when the audience is broad, shorter sentences, accessible terms, concrete
   actions, and fewer formulaic conclusions.
+- `easy_japanese`: opt-in profile for public, administrative, medical,
+  disaster, welfare, and resident-facing text; explain unfamiliar loanwords,
+  expand acronyms on first use, keep one idea per sentence, make dates/times
+  explicit, avoid double negatives, and reduce honorific density when
+  comprehension matters more than ceremonial politeness.
 - `technical`: concise wording, stable terminology, notation consistency,
   API names, UI labels, units, and minimal affective softeners.
 - `business_email` (legacy label `business email`): identify speaker, listener,

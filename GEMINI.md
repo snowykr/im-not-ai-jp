@@ -12,31 +12,29 @@ Fast Path extension for reducing AI-like Japanese prose while preserving meaning
 
 1. Preserve facts, claims, numbers, dates, proper nouns, citations, and direct quotes.
 2. Keep the source genre and register.
-3. Change only spans that match Japanese AI-writing tells.
+3. Change only spans that match the Japanese quick-rule taxonomy. Each match is
+   a rewrite cue, not authorship proof.
 4. Avoid making formal Japanese unnecessarily casual.
 5. Do not add claims, examples, or rhetorical flourishes.
 
 ## Japanese Quick Rules
 
-Strong signals:
+Use the same conservative taxonomy as `humanize-japanese/references/quick-rules.md`:
 
-- repeated generic conclusions such as `重要です`, `必要があります`, `求められます`
-- mechanical capability phrasing such as `〜することができます`
-- empty balanced framing with repeated `一方で`, `また`, `さらに`, `加えて`
-- formulaic closings such as `〜と言えるでしょう`, `〜と考えられます`
-
-Medium signals:
-
-- overuse of `〜において`, `〜を通じて`, `〜に関して`
-- nominalized chains with `こと`, `もの`, `点`
-- every sentence ending with the same polite form
-- headings or bullets that explain obvious structure instead of content
-
-Weak signals:
-
-- unnecessary emphasis markers or quotes
-- repeated abstract nouns such as `活用`, `推進`, `実現`, `向上`
-- overly uniform sentence length and rhythm
+- `cross_language_humanize_controls`: repeated phrases, over-complex clauses,
+  generic transitions, over-explained bullets, and uniform rhythm.
+- `register_monotony`: repeated sentence-final forms or modal softeners while
+  preserving the intended register.
+- `translationese_posteditese`: mechanical ability frames, overt pronouns,
+  source-order connectives, and safe cue / review-only cue distinctions.
+- `readability_texture`: sentence and clause length, kanji/kana/katakana
+  balance, punctuation, and long noun chains.
+- `honorific_politeness_safety`: `尊敬語`, `謙譲語I`, `謙譲語II`, `丁寧語`,
+  and role-safe politeness.
+- `genre_preset`: official, public help, technical, business email, product UI,
+  essay/blog, creative, and opt-in `easy_japanese`.
+- `stylometric_diagnostics`: function words, 助詞, POS n-grams, phrase
+  patterns, and comma/読点 distribution as descriptive diagnostics only.
 
 ## Response
 

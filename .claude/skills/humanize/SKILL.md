@@ -25,7 +25,8 @@ $ARGUMENTS
 
 - `ジャンル: ビジネス|ブログ|レポート|メール|公的`
 - `強度: 控えめ|標準|強め`
-- `最小深刻度: S1|S2|S3`
+- `カテゴリ: register_monotony|translationese_posteditese|readability_texture|honorific_politeness_safety|genre_preset|stylometric_diagnostics`
+- `プロファイル: easy_japanese`
 
 ## Reference
 

@@ -4,12 +4,15 @@ from pathlib import Path
 import unittest
 
 
-_QUICK_RULES_PATH = Path("codex/skills/humanize-japanese/references/quick-rules.md")
+_REPO_ROOT = Path(__file__).resolve().parents[1]
+_QUICK_RULES_PATH = (
+    _REPO_ROOT / "codex/skills/humanize-japanese/references/quick-rules.md"
+)
 _CLAUDE_QUICK_RULES_PATH = Path(
-    ".claude/skills/humanize-japanese/references/quick-rules.md"
+    _REPO_ROOT / ".claude/skills/humanize-japanese/references/quick-rules.md"
 )
 _CODEX_QUICK_RULES_PATH = Path(
-    "codex/skills/humanize-japanese/references/quick-rules.md"
+    _REPO_ROOT / "codex/skills/humanize-japanese/references/quick-rules.md"
 )
 _RULE_HEADINGS = (
     "cross_language_humanize_controls",
