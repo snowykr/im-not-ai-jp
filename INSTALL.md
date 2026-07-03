@@ -2,7 +2,7 @@
 
 `im-not-ai-jp` installs a Japanese Fast Path skill into supported local AI coding CLIs. Codex users should prefer the native Codex plugin path; direct skill symlinks remain as a compatibility path.
 
-This repository is private during incubation. Install commands below assume you have access to `snowykr/im-not-ai-jp`; do not treat them as public release instructions until the repository is intentionally made public.
+Use `main` until the first Japanese release tag is published. After `jp-v0.1.0` exists, pin installs to that tag for a stable snapshot.
 
 ```bash
 git clone https://github.com/snowykr/im-not-ai-jp.git
@@ -19,7 +19,7 @@ cd im-not-ai-jp
 Installs:
 
 - `~/.claude/skills/humanize-japanese`
-- supporting agents from `agents/`
+- `humanize-japanese`, `humanize`, and `humanize-redo` skills
 
 Use in a new Claude Code session:
 

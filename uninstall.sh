@@ -51,13 +51,15 @@ remove_codex_plugin_if_installed() {
 for s in humanize-japanese humanize humanize-redo; do
   remove_if_ours "$CLAUDE_HOME/skills/$s" "$REPO/.claude/skills/$s"
 done
+for a in "$REPO/legacy/upstream-korean/agents"/*.md; do
+  [ -e "$a" ] || continue
+  base="$(basename "$a")"
+  remove_if_ours "$CLAUDE_HOME/agents/$base" "$REPO/agents/$base" "$a"
+done
 remove_codex_plugin_if_installed
 remove_if_ours "$CODEX_HOME/skills/humanize-japanese" \
   "$REPO/plugins/im-not-ai-codex/skills/humanize-japanese" \
   "$REPO/codex/skills/humanize-japanese"
-for a in "$REPO/agents"/*.md; do
-  remove_if_ours "$CLAUDE_HOME/agents/$(basename "$a")" "$a"
-done
 
 # ---- Gemini CLI ----
 if command -v gemini >/dev/null 2>&1; then

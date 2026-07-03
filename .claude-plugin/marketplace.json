@@ -1,20 +1,20 @@
 {
-  "name": "im-not-ai",
+  "name": "im-not-ai-jp",
   "owner": {
-    "name": "epoko77-ai"
+    "name": "snowykr"
   },
   "metadata": {
-    "description": "AI가 쓴 한글 텍스트를 사람이 쓴 글처럼 윤문하는 humanize-korean 스킬 마켓플레이스",
-    "version": "1.5.0",
+    "description": "Japanese writing skill for reducing templated, translation-like, and mechanically polite AI prose while preserving meaning.",
+    "version": "0.1.0",
     "pluginRoot": "."
   },
   "plugins": [
     {
-      "name": "humanize-korean",
+      "name": "humanize-japanese",
       "source": "./",
-      "description": "AI가 쓴 한글 텍스트를 사람이 쓴 글처럼 윤문하는 오케스트레이터 스킬 + 서브에이전트 묶음 (Fast + strict).",
-      "version": "1.5.0",
-      "keywords": ["korean", "humanize", "ai-detector", "윤문", "번역투"]
+      "description": "Japanese Fast Path rewriting skill for reducing AI-like texture, translationese, register monotony, and over-structured prose.",
+      "version": "0.1.0",
+      "keywords": ["japanese", "humanize", "ai-detector", "translationese", "rewrite"]
     }
   ]
 }

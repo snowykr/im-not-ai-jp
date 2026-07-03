@@ -1,6 +1,6 @@
 {
   "name": "humanize-japanese",
-  "version": "1.5.0",
+  "version": "0.1.0",
   "description": "AI-generated Japanese text rewriting skill for reducing templated, translation-like, and mechanically polite prose. Fast Path first; Japanese taxonomy maintained independently.",
   "author": {
     "name": "snowykr"

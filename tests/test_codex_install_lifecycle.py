@@ -14,7 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 INSTALL_FIXTURE_PATHS = (
     ".agents/plugins/marketplace.json",
     ".claude/skills/humanize-japanese",
-    "agents",
+    "legacy/upstream-korean/agents",
     "plugins/im-not-ai-codex",
     "install.sh",
     "uninstall.sh",
@@ -92,6 +92,52 @@ def test_codex_uninstall_removes_packaged_plugin_symlink(tmp_path: Path) -> None
     subprocess.run(["bash", "uninstall.sh"], cwd=repo, env=env, check=True)
 
     assert not installed.exists()
+
+
+def test_uninstall_removes_legacy_claude_agent_symlinks(tmp_path: Path) -> None:
+    repo = _copy_install_fixture(tmp_path)
+    codex_home = tmp_path / "codex-home"
+    claude_home = tmp_path / "claude-home"
+    agents_home = claude_home / "agents"
+    agents_home.mkdir(parents=True)
+    env = _env_without_codex(codex_home) | {"CLAUDE_HOME": str(claude_home)}
+    old_agent = agents_home / "ai-tell-detector.md"
+    moved_agent = agents_home / "naturalness-reviewer.md"
+
+    old_agent.symlink_to(repo / "agents" / "ai-tell-detector.md")
+    moved_agent.symlink_to(
+        repo / "legacy" / "upstream-korean" / "agents" / "naturalness-reviewer.md"
+    )
+
+    subprocess.run(["bash", "uninstall.sh"], cwd=repo, env=env, check=True)
+
+    assert not old_agent.exists()
+    assert not old_agent.is_symlink()
+    assert not moved_agent.exists()
+    assert not moved_agent.is_symlink()
+
+
+def test_uninstall_preserves_unmanaged_claude_agent_entries(tmp_path: Path) -> None:
+    repo = _copy_install_fixture(tmp_path)
+    codex_home = tmp_path / "codex-home"
+    claude_home = tmp_path / "claude-home"
+    agents_home = claude_home / "agents"
+    unmanaged_target = tmp_path / "user-agents" / "naturalness-reviewer.md"
+    agents_home.mkdir(parents=True)
+    unmanaged_target.parent.mkdir()
+    unmanaged_target.write_text("user-managed agent\n", encoding="utf-8")
+    env = _env_without_codex(codex_home) | {"CLAUDE_HOME": str(claude_home)}
+    unmanaged_file = agents_home / "ai-tell-detector.md"
+    unmanaged_symlink = agents_home / "naturalness-reviewer.md"
+
+    unmanaged_file.write_text("do not remove\n", encoding="utf-8")
+    unmanaged_symlink.symlink_to(unmanaged_target)
+
+    subprocess.run(["bash", "uninstall.sh"], cwd=repo, env=env, check=True)
+
+    assert unmanaged_file.read_text(encoding="utf-8") == "do not remove\n"
+    assert unmanaged_symlink.is_symlink()
+    assert unmanaged_symlink.readlink() == unmanaged_target
 
 
 def test_codex_uninstall_removes_native_plugin_install(tmp_path: Path) -> None:

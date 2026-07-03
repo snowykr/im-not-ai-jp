@@ -18,7 +18,7 @@ print_help() {
 Usage: ./install.sh [options]
 
   Detect installed CLIs and install the humanize-japanese skill globally.
-  Claude: ~/.claude/skills/{humanize-japanese,humanize,humanize-redo} + ~/.claude/agents/*.md
+  Claude: ~/.claude/skills/{humanize-japanese,humanize,humanize-redo}
   Codex : ~/.codex/skills/humanize-japanese (native plugin skill source)
   Gemini: gemini extensions link (gemini-extension.json + GEMINI.md + commands/)
 
@@ -95,12 +95,9 @@ install_one() {
 # ---- Claude ----
 if [ "$DO_CLAUDE" != no ] && { [ "$DO_CLAUDE" = yes ] || has_claude_target; }; then
   echo "== Claude Code =="
-  run mkdir -p "$CLAUDE_HOME/skills" "$CLAUDE_HOME/agents"
+  run mkdir -p "$CLAUDE_HOME/skills"
   for s in humanize-japanese humanize humanize-redo; do
     install_one "$REPO/.claude/skills/$s" "$CLAUDE_HOME/skills/$s"
-  done
-  for a in "$REPO/agents"/*.md; do
-    install_one "$a" "$CLAUDE_HOME/agents/$(basename "$a")"
   done
 else
   echo "== Claude Code: skipped (claude or $CLAUDE_HOME not detected; use --claude-only to force) =="
