@@ -37,7 +37,11 @@ jobs:
         run: python scripts/sync_codex_plugin.py --check --verbose
 
       - name: Validate lifecycle shell syntax
-        run: bash -n install.sh uninstall.sh update.sh
+        run: |
+          set -euo pipefail
+          for script in install.sh uninstall.sh update.sh; do
+            bash -n "$script"
+          done
 
       - name: Validate JSON manifests
         run: |
