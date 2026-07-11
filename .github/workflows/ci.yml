@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate repository surfaces
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test dependency
+        run: python -m pip install --disable-pip-version-check pytest
+
+      - name: Run Python tests
+        run: python -m pytest -q tests
+
+      - name: Verify Codex plugin synchronization
+        run: python scripts/sync_codex_plugin.py --check --verbose
+
+      - name: Validate lifecycle shell syntax
+        run: |
+          set -euo pipefail
+          for script in install.sh uninstall.sh update.sh; do
+            bash -n "$script"
+          done
+
+      - name: Validate JSON manifests
+        run: |
+          set -euo pipefail
+          for manifest in \
+            .claude-plugin/plugin.json \
+            .claude-plugin/marketplace.json \
+            .agents/plugins/marketplace.json \
+            plugins/im-not-ai-codex/.codex-plugin/plugin.json \
+            gemini-extension.json; do
+            python -m json.tool "$manifest" >/dev/null
+          done
+
+      - name: Reject whitespace errors in the event diff
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          set -euo pipefail
+          if [ -n "$BASE_SHA" ] && [ "$BASE_SHA" != "0000000000000000000000000000000000000000" ]; then
+            if [ "$GITHUB_EVENT_NAME" = "pull_request" ]; then
+              git diff --check "$BASE_SHA...$HEAD_SHA"
+            else
+              git diff --check "$BASE_SHA" "$HEAD_SHA"
+            fi
+          else
+            echo "No event diff range for workflow_dispatch; working tree is checkout-clean."
+          fi
