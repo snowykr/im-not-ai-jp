@@ -58,7 +58,7 @@ codex plugin marketplace add .
 codex plugin add im-not-ai-codex@im-not-ai-jp
 ```
 
-Codex では `$humanize-japanese` で呼び出せます。通常は Fast default で処理し、`strict`、`精密`、`subagent`、`parallel review` のように明示された場合だけ Codex subagent workflow を使います。
+Codexでは`$humanize-japanese`で呼び出せます。通常はFast defaultで処理し、`strict`、`精密`、`subagent`、`parallel review`のように明示された場合だけCodex subagent workflowを使います。strictはcurrent-sessionで公開されたsubagent tool nameとargument schemasだけを確認し、完全で曖昧さのないnamespaced v1またはflat v2の一方だけを選び、両者を混在させません。ユーザーがmodelまたはreasoningのoverrideを明示しない限り、spawnでmodelやreasoning defaultを指定せず、明示されたoverrideも選択したcurrent-sessionで公開されたspawn schemaが対応するときだけforwardします。tool exposureがない、不完全、または曖昧な場合はmain-threadで順番に実行し、fallbackを明記します。Codex pluginの範囲はskillの配布だけで、custom agent設定は含みません。
 
 Claude Code、Gemini CLI、または Codex plugin を使えない環境では、互換インストールとして次を実行します。
 

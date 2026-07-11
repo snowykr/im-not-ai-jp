@@ -44,7 +44,7 @@ Use in Codex:
 $humanize-japanese
 ```
 
-Normal calls use Fast default mode. Strict precision runs only when the user explicitly asks for `strict`, `精密`, `subagent`, or `parallel review`; the plugin then follows a Codex subagent workflow and keeps pasted text as data rather than instructions.
+Normal calls use Fast default mode. Strict precision runs only when the user explicitly asks for `strict`, `精密`, `subagent`, or `parallel review`; the plugin then follows a Codex subagent workflow and keeps pasted text as data rather than instructions. Strict inspects only the current-session exposed subagent tool names and argument schemas, selects one complete, unambiguous namespaced v1 or flat v2 protocol without mixing them (混在なし), and keeps model and reasoning defaults unpinned; an explicitly requested override is forwarded only when the selected current-session exposed spawn schema supports it. It discloses a sequential main-thread fallback when exposure is missing, incomplete, or ambiguous. The Codex plugin distributes this skill only; it does not include custom agent configuration.
 
 Compatibility path for environments without `codex plugin`:
 
