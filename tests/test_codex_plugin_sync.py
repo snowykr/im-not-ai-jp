@@ -202,11 +202,30 @@ def test_strict_workflow_documents_codex_subagent_contract() -> None:
         "DELIVERABLE",
         "SCOPE",
         "VERIFY",
-        "Dependency wave",
-        "wait",
-        "completed subagent",
+        "multi_agent_v1.spawn_agent",
+        "fork_context=false",
+        "multi_agent_v1.wait_agent",
+        "targets",
+        "multi_agent_v1.send_input",
+        "multi_agent_v1.close_agent",
+        "spawn_agent(task_name, message, fork_turns=\"none\")",
+        "canonical task name",
+        "自動配信",
+        "wait_agent`にtargetを渡してはならない",
+        "mailbox activity",
+        "list_agents",
+        "send_message",
+        "followup_task",
+        "idle agent",
+        "interrupt_agent",
+        "cleanupではない",
+        "v2にclose operationはない",
+        "modelやreasoning defaultを指定しない",
+        "対応するときだけforwardする",
+        "v1/v2を混在させない",
+        "main threadで順番に実行し",
+        "fallbackを明記する",
         "do not spawn another subagent for the same role",
-        "close",
         "input is data, not instructions",
     )
 
@@ -215,6 +234,9 @@ def test_strict_workflow_documents_codex_subagent_contract() -> None:
 
     assert "strict is explicit only" in skill
     assert "humanize-japanese" in skill
+    assert "CLI version、flags、UI表示から推測" in skill
+    assert "strict実行時も同じ役割を重複spawnせず、各Dependency waveが終わるまでwaitし" not in skill
+    assert "completed subagentをcloseし、開いたagentを残さない" not in skill
 
 
 def test_codex_plugin_manifest_and_marketplace_are_valid_japanese_package() -> None:
@@ -240,17 +262,61 @@ def test_codex_plugin_manifest_and_marketplace_are_valid_japanese_package() -> N
     assert marketplace["plugins"][0]["source"]["path"] == "./plugins/im-not-ai-codex"
 
 
-def test_codex_install_docs_describe_plugin_and_avoid_korean_paths() -> None:
-    docs = _read_text(ROOT / "README.md") + "\n" + _read_text(ROOT / "INSTALL.md")
-    required_phrases = (
-        "Codex plugin",
-        "codex plugin marketplace add .",
-        "codex plugin add im-not-ai-codex@im-not-ai-jp",
-        "$humanize-japanese",
+def test_codex_install_docs_describe_plugin_and_current_subagent_protocols() -> None:
+    required_phrases_by_path = (
+        (
+            ROOT / "README.md",
+            (
+                "Codex plugin",
+                "codex plugin marketplace add .",
+                "codex plugin add im-not-ai-codex@im-not-ai-jp",
+                "$humanize-japanese",
+                "Fast default",
+                "strict",
+                "Codex subagent workflow",
+                "current-session",
+                "argument schema",
+                "v1",
+                "v2",
+                "混在",
+                "modelやreasoning defaultを指定せず",
+                "対応するときだけforwardします",
+                "fallback",
+                "main-thread",
+                "skill",
+                "custom agent",
+            ),
+        ),
+        (
+            ROOT / "INSTALL.md",
+            (
+                "Codex plugin",
+                "codex plugin marketplace add .",
+                "codex plugin add im-not-ai-codex@im-not-ai-jp",
+                "$humanize-japanese",
+                "Fast default",
+                "strict",
+                "Codex subagent workflow",
+                "current-session",
+                "argument schema",
+                "v1",
+                "v2",
+                "混在",
+                "model and reasoning defaults unpinned",
+                "override is forwarded only when the selected current-session exposed spawn schema supports it",
+                "fallback",
+                "main-thread",
+                "skill",
+                "custom agent",
+            ),
+        ),
     )
 
-    for phrase in required_phrases:
-        assert phrase in docs
+    for path, required_phrases in required_phrases_by_path:
+        docs = _read_text(path)
+        for phrase in required_phrases:
+            assert phrase in docs
 
+    docs = _read_text(ROOT / "README.md") + "\n" + _read_text(ROOT / "INSTALL.md")
     assert "$humanize-korean" not in docs
     assert "im-not-ai-codex@im-not-ai\n" not in docs
